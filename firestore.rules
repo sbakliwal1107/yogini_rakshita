@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ----- users -----
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+
+      // User creates own profile during signup with role='user' (or 'admin'
+      // ONLY if their phone is hardcoded in app constants AND the client sets
+      // it that way — admins should still be re-verified by the human admin).
+      allow create: if isOwner(uid)
+        && request.resource.data.phone == request.auth.token.phone_number
+        && request.resource.data.demoClassesJoined == 0
+        && request.resource.data.accessUntil == null;
+
+      // Users can update their own profile fields, but NOT role/accessUntil/
+      // freeAccess/demoClassesJoined increments-by-more-than-one.
+      allow update: if (
+        isOwner(uid)
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.accessUntil == resource.data.accessUntil
+        && request.resource.data.freeAccess == resource.data.freeAccess
+        && (request.resource.data.demoClassesJoined == resource.data.demoClassesJoined
+            || request.resource.data.demoClassesJoined == resource.data.demoClassesJoined + 1)
+      ) || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    // ----- payments -----
+    match /payments/{pid} {
+      allow read: if isAdmin()
+        || (isSignedIn() && resource.data.userId == request.auth.uid);
+
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending';
+
+      // Only admin can change status / mark approved.
+      allow update, delete: if isAdmin();
+    }
+
+    // ----- reviews -----
+    match /reviews/{rid} {
+      allow read: if true;
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin()
+        || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // ----- contacts -----
+    match /contacts/{cid} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+  }
+}

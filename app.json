@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "Yogini Rakshita",
+    "slug": "yogini-rakshita",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "yoginirakshita",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yoginirakshita.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Used to capture payment screenshots if needed.",
+        "NSPhotoLibraryUsageDescription": "Used to upload your UPI payment screenshot."
+      }
+    },
+    "android": {
+      "package": "com.yoginirakshita.app",
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "backgroundColor": "#FFF7ED"
+      },
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECEIVE_SMS",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Yogini Rakshita to access your photos to upload UPI payment screenshots."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ca7a1c08-43cb-466d-b195-9837fe92ec96"
+      }
+    },
+    "owner": "yogini_rakshita"
+  }
+}

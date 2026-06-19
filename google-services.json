@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "624774959450",
+    "project_id": "yogini-rakshita",
+    "storage_bucket": "yogini-rakshita.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624774959450:android:ecc443652bad428544a363",
+        "android_client_info": {
+          "package_name": "com.yoginirakshita.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeGdaJi3-2PWutJXJc7lYMf1bM1aakGgc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
